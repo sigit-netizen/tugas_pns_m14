@@ -19,23 +19,13 @@ st.set_page_config(
 # --- KEKHASAN APLIKASI (IDENTITAS & STYLING) ---
 st.markdown("""
     <style>
-        /* Menyembunyikan tombol Deploy bawaan Streamlit, namun membiarkan menu Settings tetap ada agar bisa ganti tema */
-        .stDeployButton {display: none !important;}
-        [data-testid="stAppDeployButton"] {display: none !important;}
-        footer {visibility: hidden;}
+        /* MENGHILANGKAN SEMUA MENU DAN HEADER SEPENUHNYA */
+        header {display: none !important;}
+        footer {display: none !important;}
         
         /* Menyembunyikan tombol merah dan avatar di pojok kanan bawah */
         .viewerBadge-container {display: none !important;}
         [data-testid="stDecoration"] {display: none !important;}
-
-        /* Menyembunyikan elemen tidak penting di dalam Menu Dropdown (Rerun, Clear Cache, dll) */
-        [data-testid="stPopoverBody"] ul {display: none !important;}
-        [data-testid="stPopoverBody"] > div:not(:first-child) {display: none !important;}
-        [data-testid="stPopoverBody"] hr {display: none !important;}
-        
-        /* Menyembunyikan elemen tidak penting di dalam Settings Modal (jika ada) */
-        div[role="dialog"] [data-testid="stCheckbox"] {display: none !important;}
-        div[role="dialog"] h2 {display: none !important;}
     </style>
     <div style='text-align: center; background: linear-gradient(to right, #2b5876, #4e4376); padding: 20px; border-radius: 15px; margin-bottom: 25px; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);'>
         <h1 style='color: white; margin: 0; font-family: sans-serif;'>📈 Aplikasi Simulasi Bisnis Interaktif</h1>
