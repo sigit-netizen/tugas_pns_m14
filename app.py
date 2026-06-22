@@ -1,9 +1,9 @@
 import streamlit as st
 import numpy as np
+import pandas as pd
+import altair as alt
 import joblib # Jika model disimpan sebagai file .pkl
 import os
-import matplotlib.pyplot as plt
-
 # Konfigurasi Halaman (Kekhasan)
 st.set_page_config(page_title="Simulasi Bisnis Pro", page_icon="🚀", layout="wide")
 
@@ -30,29 +30,47 @@ model = joblib.load(model_path)
 
 # 2. Setup Layout Utama
 hasil_container = st.container()
+st.write("") # Spasi kosong sedikit
 
-# Buat dua kolom: Kiri untuk grafik (1 bagian), Kanan untuk input (1.2 bagian)
-col_kiri, col_kanan = st.columns([1, 1.2])
+# Buat dua kolom: Kiri untuk grafik, Kanan untuk input simulasi
+col_kiri, col_kanan = st.columns([1.2, 1])
 
 # Tempatkan Input Simulasi di Kolom Kanan
 with col_kanan:
-    st.subheader("🎛️ Input Kebijakan (Simulasi)")
-    st.markdown("Atur nilai di bawah ini untuk melihat perubahannya pada grafik di samping:")
-    iklan = st.slider("Budget Iklan", 0, 50, 10)
-    diskon = st.slider("Persentase Diskon", 0, 20, 5)
+    st.markdown("### 🎛️ Input Simulasi")
+    st.info("Geser *slider* di bawah untuk melihat efeknya secara langsung pada grafik.")
+    iklan = st.slider("💰 Budget Iklan", 0, 50, 10)
+    diskon = st.slider("🏷️ Persentase Diskon", 0, 20, 5)
 
 # 3. Prediksi (Logika What-If)
 input_data = np.array([[iklan, diskon]])
-prediksi = model.predict(input_data)[0]
+prediksi = float(model.predict(input_data)[0])
+baseline = 100.0
 
-# 4. Tampilkan Hasil Prediksi Teks di atas (dalam hasil_container)
+# 4. Tampilkan Hasil Prediksi dengan st.metric (Tampilan Dashboard Dinamis)
 with hasil_container:
-    st.subheader("📊 Hasil Simulasi")
-    st.success(f"Keuntungan yang diprediksi: **Rp {prediksi:.2f} Juta**")
+    selisih = prediksi - baseline
+    st.metric(
+        label="Prediksi Keuntungan Skenario Baru", 
+        value=f"Rp {prediksi:.2f} Juta", 
+        delta=f"{selisih:.2f} Juta (vs Baseline)"
+    )
 
-# 5. Visualisasi Perbandingan (di letakkan di Kolom Kiri)
+# 5. Visualisasi Perbandingan Interaktif dengan Altair
 with col_kiri:
-    fig, ax = plt.subplots(figsize=(4, 3)) # Ukuran grafik tetap kecil
-    ax.bar(['Baseline', 'Skenario Baru'], [100, prediksi], color=['#95a5a6', '#2ecc71'])
-    ax.set_ylabel("Keuntungan")
-    st.pyplot(fig, use_container_width=True)
+    st.markdown("### 📈 Grafik Perbandingan")
+    # Membuat dataframe sederhana untuk grafik
+    df_chart = pd.DataFrame({
+        "Skenario": ["Baseline", "Skenario Baru"],
+        "Keuntungan (Juta)": [baseline, prediksi]
+    })
+    
+    # Menggunakan Altair agar kita bisa mengatur ukuran lebar batang (size)
+    chart = alt.Chart(df_chart).mark_bar(size=60, cornerRadiusTopLeft=5, cornerRadiusTopRight=5).encode(
+        x=alt.X('Skenario', title=None, axis=alt.Axis(labelAngle=0, labelFontSize=12)),
+        y=alt.Y('Keuntungan (Juta)', title='Keuntungan (Juta)'),
+        color=alt.Color('Skenario', legend=None, scale=alt.Scale(range=['#5DADE2', '#48C9B0']))
+    ).properties(height=320)
+    
+    # Menampilkan chart
+    st.altair_chart(chart, use_container_width=True)
