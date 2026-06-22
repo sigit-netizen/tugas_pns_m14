@@ -39,6 +39,21 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
+# Trik Hacker IT: Menggunakan JavaScript untuk "Menyerang" dan mematikan elemen di luar iframe Streamlit Cloud
+import streamlit.components.v1 as components
+components.html("""
+    <script>
+        // Mencari elemen pembuat masalah di frame induk (Streamlit Cloud wrapper)
+        const parentDoc = window.parent.document;
+        const badges = parentDoc.querySelectorAll('[class*="viewerBadge"], [data-testid="stCreatorProfile"], [data-testid="manage-app-button"]');
+        
+        // Membunuh elemen tersebut satu per satu
+        badges.forEach(badge => {
+            badge.style.display = 'none';
+        });
+    </script>
+""", height=0, width=0)
+
 st.sidebar.markdown("### 👑 Identitas Kreator")
 st.sidebar.success(
     "**Dibuat Oleh:**\n\n"
