@@ -5,16 +5,37 @@ import altair as alt
 import joblib # Jika model disimpan sebagai file .pkl
 import os
 # Konfigurasi Halaman (Kekhasan)
-st.set_page_config(page_title="Simulasi Bisnis Pro", page_icon="🚀", layout="wide")
+st.set_page_config(
+    page_title="Simulasi Bisnis Pro", 
+    page_icon="🚀", 
+    layout="wide",
+    menu_items={
+        'Get Help': None,
+        'Report a bug': None,
+        'About': None
+    }
+)
 
 # --- KEKHASAN APLIKASI (IDENTITAS & STYLING) ---
 st.markdown("""
     <style>
-        /* Menyembunyikan header/menu bawaan Streamlit di pojok kanan atas */
-        #MainMenu {visibility: hidden;}
-        header {visibility: hidden;}
+        /* Menyembunyikan tombol Deploy bawaan Streamlit, namun membiarkan menu Settings tetap ada agar bisa ganti tema */
+        .stDeployButton {display: none !important;}
+        [data-testid="stAppDeployButton"] {display: none !important;}
         footer {visibility: hidden;}
-        [data-testid="stToolbar"] {visibility: hidden !important;}
+        
+        /* Menyembunyikan tombol merah dan avatar di pojok kanan bawah */
+        .viewerBadge-container {display: none !important;}
+        [data-testid="stDecoration"] {display: none !important;}
+
+        /* Menyembunyikan elemen tidak penting di dalam Menu Dropdown (Rerun, Clear Cache, dll) */
+        [data-testid="stPopoverBody"] ul {display: none !important;}
+        [data-testid="stPopoverBody"] > div:not(:first-child) {display: none !important;}
+        [data-testid="stPopoverBody"] hr {display: none !important;}
+        
+        /* Menyembunyikan elemen tidak penting di dalam Settings Modal (jika ada) */
+        div[role="dialog"] [data-testid="stCheckbox"] {display: none !important;}
+        div[role="dialog"] h2 {display: none !important;}
     </style>
     <div style='text-align: center; background: linear-gradient(to right, #2b5876, #4e4376); padding: 20px; border-radius: 15px; margin-bottom: 25px; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);'>
         <h1 style='color: white; margin: 0; font-family: sans-serif;'>📈 Aplikasi Simulasi Bisnis Interaktif</h1>
@@ -45,9 +66,8 @@ col_kiri, col_kanan = st.columns([1.2, 1])
 # Tempatkan Input Simulasi di Kolom Kanan
 with col_kanan:
     st.markdown("### 🎛️ Input Simulasi")
-    st.info("Geser *slider* di bawah untuk melihat efeknya secara langsung pada grafik.")
-    iklan = st.slider("💰 Budget Iklan", 0, 50, 10)
-    diskon = st.slider("🏷️ Persentase Diskon", 0, 20, 5)
+    iklan = st.slider("💰 Budget Iklan", 0, 100, 10, format="Rp %d Juta")
+    diskon = st.slider("🏷️ Persentase Diskon", 0, 100, 5, format="%d%%")
 
 # 3. Prediksi (Logika What-If)
 input_data = np.array([[iklan, diskon]])
