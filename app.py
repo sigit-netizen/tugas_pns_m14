@@ -9,6 +9,13 @@ st.set_page_config(page_title="Simulasi Bisnis Pro", page_icon="🚀", layout="w
 
 # --- KEKHASAN APLIKASI (IDENTITAS & STYLING) ---
 st.markdown("""
+    <style>
+        /* Menyembunyikan header/menu bawaan Streamlit di pojok kanan atas */
+        #MainMenu {visibility: hidden;}
+        header {visibility: hidden;}
+        footer {visibility: hidden;}
+        [data-testid="stToolbar"] {visibility: hidden !important;}
+    </style>
     <div style='text-align: center; background: linear-gradient(to right, #2b5876, #4e4376); padding: 20px; border-radius: 15px; margin-bottom: 25px; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);'>
         <h1 style='color: white; margin: 0; font-family: sans-serif;'>📈 Aplikasi Simulasi Bisnis Interaktif</h1>
         <h4 style='color: #e0e0e0; margin: 5px 0 0 0; font-style: italic;'>Karya Spesial: [sigit] - [2313020027]</h4>
